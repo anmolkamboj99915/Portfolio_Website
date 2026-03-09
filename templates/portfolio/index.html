@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+
+{% block content %}
+<header class="hero">
+
+    <h1>Anmol Jaiya</h1>
+    <p>Python Django Developer</p>
+
+    <p>
+        I build backend systems and web applications using Python, Django, HTML, CSS, and JavaScript.
+    </p>
+
+</header>
+
+<div class="categories">
+    <a href="/">All</a>
+    {% for category in categories %}
+        <a href="/?category={{ category.id }}">
+            {{ category.name }}
+        </a>
+    {% endfor %}
+</div>
+
+<section id="projects">
+    <h1>My Projects</h1>
+
+    <div class="projects-container">
+
+        {% for project in projects %}
+            <div class="project-card">
+
+                <h2>
+                    <a href="{% url 'project_detail' project.slug %}">
+                        {{project.title }}
+                    </a>
+                </h2>
+
+                {% if project.image %}
+                    <img src="{{ project.image.url }}" width="200">
+                {% endif %}
+                
+                <p>{{ project.description }}</p>
+
+                <div class="buttons">
+                    <a href="{{ project.github_link }}" target="_blank">GitHub</a>
+                    <a href="{{ project.live_link }}" target="_blank">Live Demo</a>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+</section>
+
+<section id="skills">
+    <h1>Skills</h1>
+
+    <div class="skills">
+        {% for skill in skills %}
+            <span>{{ skill.name }}</span>
+        {% endfor %}
+    </div>
+</section>
+
+<section id="contact">
+
+    <h1>Contact</h1>
+
+    <p>Email: anmoljaiya877@gmail.com</p>
+    <p>GitHub: https://github.com/anmolkamboj99915</p>
+    <p>LinkedIn: https://www.linkedin.com/in/anmol-jaiya-9b7b5217b/</p>
+</section>
+
+{% endblock %}

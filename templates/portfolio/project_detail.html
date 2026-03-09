@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h1>{{ project.title }}</h1>
+
+{% if project.image %}
+    <img src="{{ project.image.url }}" width="400">
+{% endif %}
+
+<p>{{ project.description }}</p>
+
+<a href="{{ project.github_link }}">GitHub</a>
+<a href="{{ project.live_link }}">Live Demo</a>
+
+{% endblock %}
