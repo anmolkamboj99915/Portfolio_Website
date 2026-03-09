@@ -6,7 +6,7 @@ class ProjectAdmin(admin.ModelAdmin):
     
     list_display = ("title", "category", "github_link", "live_link")
     search_fields = ("title", "description")
-    list_filter = ("category")
+    list_filter = ("category",)
     
     prepopulated_fields = {"slug": ("title",)}
 
