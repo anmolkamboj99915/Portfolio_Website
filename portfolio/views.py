@@ -1,5 +1,8 @@
 from django.shortcuts import render, get_object_or_404
-from .models import Project, Skill, Category
+from .models import Project, Skill, Category, Contact
+from django.core.mail import send_mail
+from django.conf import settings
+
 
 # Create your views here.
 def index(request):
@@ -14,6 +17,24 @@ def index(request):
     skills = Skill.objects.all()
     categories = Category.objects.all()
     
+    if request.method == "POST":
+        name = request.POST.get("name")
+        email = request.POST.get("email")
+        message = request.POST.get("message")
+        
+        Contact.objects.create(
+            name=name,
+            email=email,
+            message=message,
+        )
+        
+        send_mail(
+            subject=f"New Portfolio Message from {name}",
+            message=f"Name: {name}\nEmail: {email}\n\nMessage:\n{message}",
+            from_email=settings.EMAIL_HOST_USER,
+            recipient_list=[settings.EMAIL_HOST_USER],
+        )
+        
     return render(request, "portfolio/index.html", {
         "projects": projects,
         "skills": skills,

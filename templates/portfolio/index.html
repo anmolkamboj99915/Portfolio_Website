@@ -1,72 +1,125 @@
-{% extends "base.html" %}
+{% extends "base.html" %} {% block content %}
 
-{% block content %}
 <header class="hero">
+  <div class="hero-content">
+    <h1>Hi, I'm Anmol 👋</h1>
 
-    <h1>Anmol Jaiya</h1>
-    <p>Python Django Developer</p>
+    <p class="hero-role">Python & Django Developer</p>
 
-    <p>
-        I build backend systems and web applications using Python, Django, HTML, CSS, and JavaScript.
+    <p class="hero-desc">
+      I build backend systems, web applications, and scalable APIs using Python,
+      Django, HTML, CSS, and JavaScript.
     </p>
 
+    <div class="hero-buttons">
+      <a
+        href="https://github.com/anmolkamboj99915"
+        target="_blank"
+        rel="noopener"
+        class="btn-secondary"
+      >
+        GitHub
+      </a>
+    </div>
+  </div>
 </header>
 
 <div class="categories">
-    <a href="/">All</a>
-    {% for category in categories %}
-        <a href="/?category={{ category.id }}">
-            {{ category.name }}
-        </a>
-    {% endfor %}
+  <a href="/">All</a>
+
+  {% for category in categories %}
+  <a href="/?category={{ category.id }}"> {{ category.name }} </a>
+  {% endfor %}
 </div>
 
 <section id="projects">
-    <h1>My Projects</h1>
+  <h1>My Projects</h1>
 
-    <div class="projects-container">
+  <div class="projects-container">
+    {% for project in projects %}
+    <div class="project-card">
+      {% if project.image %}
+      <div class="project-img">
+        <img src="{{ project.image.url }}" alt="Project Image" />
+      </div>
+      {% endif %}
 
-        {% for project in projects %}
-            <div class="project-card">
+      <div class="project-content">
+        <h2>
+          <a href="{% url 'project_detail' project.slug %}">
+            {{ project.title }}
+          </a>
+        </h2>
 
-                <h2>
-                    <a href="{% url 'project_detail' project.slug %}">
-                        {{project.title }}
-                    </a>
-                </h2>
+        <p>{{ project.description|truncatewords:20 }}</p>
 
-                {% if project.image %}
-                    <img src="{{ project.image.url }}" width="200">
-                {% endif %}
-                
-                <p>{{ project.description }}</p>
+        <div class="tech-stack">
+          {% for tech in project.technologies.all %}
+          <span>{{ tech.name }}</span>
+          {% endfor %}
+        </div>
 
-                <div class="buttons">
-                    <a href="{{ project.github_link }}" target="_blank">GitHub</a>
-                    <a href="{{ project.live_link }}" target="_blank">Live Demo</a>
-                </div>
-            </div>
-        {% endfor %}
+        <div class="project-links">
+          <a href="{{ project.github_link }}" target="_blank" rel="noopener">
+            GitHub
+          </a>
+
+          <a href="{{ project.live_link }}" target="_blank" rel="noopener">
+            Live Demo
+          </a>
+        </div>
+      </div>
     </div>
+    {% endfor %}
+  </div>
 </section>
 
 <section id="skills">
-    <h1>Skills</h1>
+  <h1>Skills</h1>
 
-    <div class="skills">
-        {% for skill in skills %}
-            <span>{{ skill.name }}</span>
-        {% endfor %}
-    </div>
+  <div class="skills">
+    {% for skill in skills %}
+    <span>{{ skill.name }}</span>
+    {% endfor %}
+  </div>
+</section>
+
+<section id="github">
+  <h1>GitHub Activity</h1>
+
+  <p>Check out my open-source projects and contributions.</p>
+
+  <a href="https://github.com/anmolkamboj99915" target="_blank" rel="noopener">
+    Visit My GitHub
+  </a>
+
+  <img
+    src="https://github-readme-stats.vercel.app/api?username=anmolkamboj99915&show_icons=true"
+    width="400"
+    alt="Anmol GitHub Stats"
+  />
+
+  <img
+    src="https://github-readme-stats.vercel.app/api/top-langs/?username=anmolkamboj99915&layout=compact"
+    width="400"
+    alt="Most used languages"
+  />
 </section>
 
 <section id="contact">
+  <h1>Contact Me:</h1>
 
-    <h1>Contact</h1>
+  <form method="POST" action="">
+    {% csrf_token %}
 
-    <p>Email: anmoljaiya877@gmail.com</p>
-    <p>GitHub: https://github.com/anmolkamboj99915</p>
-    <p>LinkedIn: https://www.linkedin.com/in/anmol-jaiya-9b7b5217b/</p>
+    <input type="text" name="name" placeholder="Your Name" required />
+
+    <input type="email" name="email" placeholder="Your Email" required />
+
+    <textarea name="message" placeholder="Your Message" required></textarea>
+
+    <button type="submit">Send Message</button>
+  </form>
 </section>
 
 {% endblock %}

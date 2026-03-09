@@ -29,9 +29,20 @@ class Project(models.Model):
         blank=True,
     )
     
+    technologies = models.ManyToManyField(
+        "Technology",
+        blank=True
+    )
+    
     def save(self, *args, **kwargs):
         if not self.slug:
-            self.slug = slugify(self.title)
+            base_slug = slugify(self.title)
+            slug = base_slug
+            counter = 1
+            while Project.objects.filter(slug=slug).exclude(id=self.id).exists():
+                slug = f"{base_slug}-{counter}"
+                counter += 1
+            self.slug = slug
         super().save(*args, **kwargs)
     
     def __str__(self):
@@ -43,3 +54,19 @@ class Skill(models.Model):
     def __str__(self):
         return self.name
 
+class Contact(models.Model):
+    
+    name = models.CharField(max_length=100)
+    email = models.EmailField()
+    message = models.TextField()
+    
+    created_at = models.DateTimeField(auto_now_add=True)
+    
+    def __str__(self):
+        return f"{self.name} - {self.email}"
+ 
+class Technology(models.Model):
+    name = models.CharField(max_length=100)
+    
+    def __str__(self):
+        return self.name
