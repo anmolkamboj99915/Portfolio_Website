@@ -17,8 +17,8 @@ class Project(models.Model):
     
     description = models.TextField()
     
-    github_link = models.URLField()
-    live_link = models.URLField()
+    github_link = models.URLField(blank=True, null=True)
+    live_link = models.URLField(blank=True, null=True)
     
     image = models.ImageField(upload_to='project_images/', blank=True)
     
@@ -48,6 +48,9 @@ class Project(models.Model):
     def __str__(self):
         return self.title
     
+    class Meta:
+        ordering = ["-id"]
+    
 class Skill(models.Model):
     name = models.CharField(max_length=100)
     
@@ -70,3 +73,13 @@ class Technology(models.Model):
     
     def __str__(self):
         return self.name
+
+
+class Visitor(models.Model):
+    ip_address = models.GenericIPAddressField()
+    page = models.CharField()
+
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.ip_address} - {self.page}"

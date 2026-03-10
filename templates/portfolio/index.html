@@ -15,7 +15,7 @@
       <a
         href="https://github.com/anmolkamboj99915"
         target="_blank"
-        rel="noopener"
+        rel="noopener noreferrer"
         class="btn-secondary"
       >
         GitHub
@@ -25,18 +25,24 @@
 </header>
 
 <div class="categories">
-  <a href="/">All</a>
+  <a href="{% url 'home' %}">All</a>
 
   {% for category in categories %}
-  <a href="/?category={{ category.id }}"> {{ category.name }} </a>
+  <a href="{% url 'home' %}?category={{ category.id }}">
+    {{ category.name }}
+  </a>
   {% endfor %}
 </div>
 
+<form method="GET" class="search-form">
+  <input type="text" name="search" placeholder="Search projects..." />
+  <button type="submit">Search</button>
+</form>
 <section id="projects">
   <h1>My Projects</h1>
 
   <div class="projects-container">
-    {% for project in projects %}
+    {% if projects %} {% for project in projects %}
     <div class="project-card">
       {% if project.image %}
       <div class="project-img">
@@ -60,17 +66,29 @@
         </div>
 
         <div class="project-links">
-          <a href="{{ project.github_link }}" target="_blank" rel="noopener">
+          {% if project.github_link %}
+          <a
+            href="{{ project.github_link }}"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
             GitHub
           </a>
-
-          <a href="{{ project.live_link }}" target="_blank" rel="noopener">
+          {% endif %} {% if project.live_link %}
+          <a
+            href="{{ project.live_link }}"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
             Live Demo
           </a>
+          {% endif %}
         </div>
       </div>
     </div>
-    {% endfor %}
+    {% endfor %} {% else %}
+    <p>No projects available.</p>
+    {% endif %}
   </div>
 </section>
 
@@ -89,7 +107,11 @@
 
   <p>Check out my open-source projects and contributions.</p>
 
-  <a href="https://github.com/anmolkamboj99915" target="_blank" rel="noopener">
+  <a
+    href="https://github.com/anmolkamboj99915"
+    target="_blank"
+    rel="noopener noreferrer"
+  >
     Visit My GitHub
   </a>
 
@@ -106,6 +128,27 @@
   />
 </section>
 
+<section id="github-projects">
+  <h1>Open Source Projects</h1>
+
+  {% if github_projects %}
+  <div class="projects-container">
+    {% for repo in github_projects %}
+    <div class="project-card">
+      <h2>{{ repo.name }}</h2>
+
+      <p>{{ repo.description|default:"No description available." }}</p>
+
+      <a href="{{ repo.github }}" target="_blank" rel="noopener noreferrer">
+        View Repository
+      </a>
+    </div>
+    {% endfor %}
+  </div>
+  {% else %}
+  <p>No GitHub projects found</p>
+  {% endif %}
+</section>
 <section id="contact">
   <h1>Contact Me:</h1>
 
