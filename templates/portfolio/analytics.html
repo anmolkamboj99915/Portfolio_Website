@@ -1,0 +1,35 @@
+{% extends "base.html" %} {% block content %}
+
+<h1>Portfolio Analytics</h1>
+
+<div class="analytics">
+	<div class="stat-card">
+		<h2>{{ total_projects }}</h2>
+		<p>Total Projects</p>
+	</div>
+
+	<div class="stat-card">
+		<h2>{{ total_visitors }}</h2>
+		<p>Total Visitors</p>
+	</div>
+
+	<div class="stat-card">
+		<h2>{{ total_messages }}</h2>
+		<p>Contact Message</p>
+	</div>
+
+	<div class="stat-card">
+		<h2>⭐ {{ total_stars }}</h2>
+		<p>Total GitHub Stars</p>
+	</div>
+</div>
+
+<h2>Most Viewed Projects</h2>
+
+<ul>
+	{% for project in top_projects %}
+	<li>{{ project.page }} - {{ project.count }} views</li>
+	{% endfor %}
+</ul>
+
+{% endblock %}

@@ -1,13 +1,11 @@
 from django.urls import path
 from . import views
 from django.contrib.sitemaps.views import sitemap
-from portfolio.sitemaps import ProjectSitemap
-
+from .sitemaps import ProjectSitemap
 
 sitemaps = {
     "projects": ProjectSitemap,
 }
-
 
 urlpatterns = [
     path("", views.index, name="home"),
@@ -20,7 +18,8 @@ urlpatterns = [
     path(
         "sitemap.xml",
         sitemap,
-        {"sitemaps: sitemaps"},
+        kwargs={"sitemaps": sitemaps},
         name="sitemap"
     ),
+    path("github-webhook/", views.github_webhook, name="github_webhook"),
 ]

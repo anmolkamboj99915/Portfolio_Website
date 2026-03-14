@@ -1,168 +1,202 @@
 {% extends "base.html" %} {% block content %}
 
 <header class="hero">
-  <div class="hero-content">
-    <h1>Hi, I'm Anmol 👋</h1>
+	<div class="hero-content">
+		<h1>Hi, I'm Anmol 👋</h1>
 
-    <p class="hero-role">Python & Django Developer</p>
+		<p class="hero-role">Python & Django Developer</p>
 
-    <p class="hero-desc">
-      I build backend systems, web applications, and scalable APIs using Python,
-      Django, HTML, CSS, and JavaScript.
-    </p>
+		<p class="hero-desc">I build backend systems, web applications, and scalable APIs using Python, Django, HTML, CSS, and JavaScript.</p>
 
-    <div class="hero-buttons">
-      <a
-        href="https://github.com/anmolkamboj99915"
-        target="_blank"
-        rel="noopener noreferrer"
-        class="btn-secondary"
-      >
-        GitHub
-      </a>
-    </div>
-  </div>
+		<div class="hero-buttons">
+			<a href="https://github.com/anmolkamboj99915" target="_blank" rel="noopener noreferrer" class="btn-secondary"> GitHub </a>
+		</div>
+	</div>
 </header>
 
-<div class="categories">
-  <a href="{% url 'home' %}">All</a>
+{% if github_profile %}
+<section id="developer-profile">
+	<div class="profile-card">
+		<img src="{{ github_profile.avatar }}" width="120" />
 
-  {% for category in categories %}
-  <a href="{% url 'home' %}?category={{ category.id }}">
-    {{ category.name }}
-  </a>
-  {% endfor %}
+		<h2>GitHub Profile</h2>
+
+		<p>{{ github_profile.bio }}</p>
+
+		<div class="profile-stats">
+			<span>👥 Followers: {{ github_profile.followers }}</span>
+			<span>📦 Repositories: {{ github_profile.public_repos }}</span>
+			<span>➡ Following: {{ github_profile.following }}</span>
+		</div>
+
+		<a href="{{ github_profile.profile_url }}" target="_blank" rel="noopener noreferrer"> View GitHub Profile </a>
+	</div>
+</section>
+{% endif %} {% if github_profile %}
+<section id="github">
+	<h1>GitHub Activity</h1>
+
+	<p>Explore my open-source work, coding activity, and most used technologies.</p>
+
+	<div class="github-profile-link">
+		<a href="{{ github_profile.profile_url }}" target="_blank" rel="noopener noreferrer"> Visit My GitHub Profile </a>
+	</div>
+
+	<div class="github-contribution-chart">
+		<h3>Contribution Activity</h3>
+		<img src="https://ghchart.rshah.org/anmolkamboj99915" alt="GitHub Contributions" />
+	</div>
+
+	<div class="github-stats">
+		<img src="https://github-readme-stats.vercel.app/api?username=anmolkamboj99915&show_icons=true" width="400" alt="GitHub Stats" />
+
+		<img src="https://github-readme-stats.vercel.app/api/top-langs/?username=anmolkamboj99915&layout=compact" width="400" alt="Top Languages" />
+	</div>
+</section>
+{% endif %}
+
+<div class="categories">
+	<a href="{% url 'home' %}">All</a>
+
+	{% for category in categories %}
+	<a href="{% url 'home' %}?category={{ category.id }}"> {{ category.name }} </a>
+	{% endfor %}
 </div>
 
 <form method="GET" class="search-form">
-  <input type="text" name="search" placeholder="Search projects..." />
-  <button type="submit">Search</button>
+	<input type="text" name="search" placeholder="Search projects, technologies, keywords..." value="{{ request.GET.search }}" />
+	<button type="submit">Search</button>
 </form>
+
 <section id="projects">
-  <h1>My Projects</h1>
+	<h1>My Projects</h1>
 
-  <div class="projects-container">
-    {% if projects %} {% for project in projects %}
-    <div class="project-card">
-      {% if project.image %}
-      <div class="project-img">
-        <img src="{{ project.image.url }}" alt="Project Image" />
-      </div>
-      {% endif %}
+	<div class="projects-container">
+		{% if projects %} {% for project in projects %}
 
-      <div class="project-content">
-        <h2>
-          <a href="{% url 'project_detail' project.slug %}">
-            {{ project.title }}
-          </a>
-        </h2>
+		<div class="project-card">
+			{% if project.image and project.image.url %}
+			<div class="project-image">
+				<img src="{{ project.image.url }}" alt="Project Image" />
+			</div>
+			{% elif project.live_link %}
+			<div class="project-image">
+				<img src="https://image.thum.io/get/{{ project.live_link }}" alt="Project Screenshot" />
+			</div>
+			{% endif %}
 
-        <p>{{ project.description|truncatewords:20 }}</p>
+			<div class="project-content">
+				{% with badges=project.get_badges %} {% if badges %}
+				<div class="project-badges">
+					{% for badge in badges %}
+					<span class="badge">{{ badge }}</span>
+					{% endfor %}
+				</div>
+				{% endif %} {% endwith %}
+				<h2>
+					{% if project.slug %}
+					<a href="{% url 'project_detail' project.slug %}"> {{ project.title }} </a>
+					{% else %} {{ project.title }} {% endif %}
+				</h2>
 
-        <div class="tech-stack">
-          {% for tech in project.technologies.all %}
-          <span>{{ tech.name }}</span>
-          {% endfor %}
-        </div>
+				<p>{{ project.description|truncatewords:20 }}</p>
 
-        <div class="project-links">
-          {% if project.github_link %}
-          <a
-            href="{{ project.github_link }}"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            GitHub
-          </a>
-          {% endif %} {% if project.live_link %}
-          <a
-            href="{{ project.live_link }}"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Live Demo
-          </a>
-          {% endif %}
-        </div>
-      </div>
-    </div>
-    {% endfor %} {% else %}
-    <p>No projects available.</p>
-    {% endif %}
-  </div>
+				<div class="tech-stack">
+					{% for tech in project.technologies.all %}
+					<span>{{ tech.name }}</span>
+					{% endfor %}
+				</div>
+
+				{% if project.tags %}
+				<div class="project-tags">
+					{% for tag in project.tags %}
+					<span class="tag">{{ tag }}</span>
+					{% endfor %}
+				</div>
+				{% endif %}
+
+				<div class="project-links">
+					{% if project.github_link %}
+					<a href="{{ project.github_link }}" target="_blank" rel="noopener noreferrer"> GitHub </a>
+					{% endif %} {% if project.live_link %}
+					<a href="{{ project.live_link }}" target="_blank" rel="noopener noreferrer"> Live Demo </a>
+					{% endif %}
+				</div>
+
+				<div class="github-stats">
+					<span>⭐ {{ project.github_stars }}</span>
+					<span>🍴 {{ project.github_forks }}</span>
+					<span>👀 {{ project.github_watchers }}</span>
+					<span>🐛 {{ project.github_issues }}</span>
+					<span>📦 {{ project.github_size }} KB</span>
+				</div>
+			</div>
+		</div>
+
+		{% endfor %} {% else %}
+		<p>No projects available.</p>
+		{% endif %}
+	</div>
 </section>
 
 <section id="skills">
-  <h1>Skills</h1>
+	<h1>Skills</h1>
 
-  <div class="skills">
-    {% for skill in skills %}
-    <span>{{ skill.name }}</span>
-    {% endfor %}
-  </div>
+	<div class="skills">
+		{% for skill in skills %}
+		<span>{{ skill.name }}</span>
+		{% endfor %}
+	</div>
 </section>
 
-<section id="github">
-  <h1>GitHub Activity</h1>
+<section class="tech-filters">
+	<h2>Filter by Technology</h2>
 
-  <p>Check out my open-source projects and contributions.</p>
+	<div class="filters">
+		<a href="{% url 'home' %}">All</a>
 
-  <a
-    href="https://github.com/anmolkamboj99915"
-    target="_blank"
-    rel="noopener noreferrer"
-  >
-    Visit My GitHub
-  </a>
-
-  <img
-    src="https://github-readme-stats.vercel.app/api?username=anmolkamboj99915&show_icons=true"
-    width="400"
-    alt="Anmol GitHub Stats"
-  />
-
-  <img
-    src="https://github-readme-stats.vercel.app/api/top-langs/?username=anmolkamboj99915&layout=compact"
-    width="400"
-    alt="Most used languages"
-  />
+		{% for tech in technologies %}
+		<a href="?tech={{ tech.name }}">{{ tech.name }}</a>
+		{% endfor %}
+	</div>
 </section>
 
 <section id="github-projects">
-  <h1>Open Source Projects</h1>
+	<h1>Open Source Projects</h1>
 
-  {% if github_projects %}
-  <div class="projects-container">
-    {% for repo in github_projects %}
-    <div class="project-card">
-      <h2>{{ repo.name }}</h2>
+	{% if github_projects %}
+	<div class="projects-container">
+		{% for repo in github_projects %}
+		<div class="project-card">
+			<h2>{{ repo.title }}</h2>
 
-      <p>{{ repo.description|default:"No description available." }}</p>
+			<p>{{ repo.description|default:"No description available." }}</p>
 
-      <a href="{{ repo.github }}" target="_blank" rel="noopener noreferrer">
-        View Repository
-      </a>
-    </div>
-    {% endfor %}
-  </div>
-  {% else %}
-  <p>No GitHub projects found</p>
-  {% endif %}
+			{% if repo.github_link %}
+			<a href="{{ repo.github_link }}" target="_blank" rel="noopener noreferrer"> View Repository </a>
+			{% endif %}
+		</div>
+		{% endfor %}
+	</div>
+	{% else %}
+	<p>No GitHub projects found</p>
+	{% endif %}
 </section>
+
 <section id="contact">
-  <h1>Contact Me:</h1>
+	<h1>Contact Me:</h1>
 
-  <form method="POST" action="">
-    {% csrf_token %}
+	<form method="POST">
+		{% csrf_token %}
 
-    <input type="text" name="name" placeholder="Your Name" required />
+		<input type="text" name="name" placeholder="Your Name" required />
 
-    <input type="email" name="email" placeholder="Your Email" required />
+		<input type="email" name="email" placeholder="Your Email" required />
 
-    <textarea name="message" placeholder="Your Message" required></textarea>
+		<textarea name="message" placeholder="Your Message" required></textarea>
 
-    <button type="submit">Send Message</button>
-  </form>
+		<button type="submit">Send Message</button>
+	</form>
 </section>
 
 {% endblock %}

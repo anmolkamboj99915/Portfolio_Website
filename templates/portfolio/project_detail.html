@@ -1,16 +1,25 @@
-{% extends "base.html" %}
+{% extends "base.html" %} {% block content %}
 
-{% block content %}
+<div class="project-detail">
+	<h1>{{ project.title }}</h1>
 
-<h1>{{ project.title }}</h1>
+	{% if project.image and project.image.url %}
+	<img src="{{ project.image.url }}" width="400" alt="{{ project.title }}" />
+	{% endif %}
 
-{% if project.image %}
-    <img src="{{ project.image.url }}" width="400">
-{% endif %}
-
-<p>{{ project.description }}</p>
-
-<a href="{{ project.github_link }}">GitHub</a>
-<a href="{{ project.live_link }}">Live Demo</a>
-
+	<p>{{ project.description }}</p>
+	{% if readme_html %}
+	<div class="readme-section">
+		<h2>Project Documentation</h2>
+		<div class="readme-content">{{ readme_html|safe }}</div>
+	</div>
+	{% endif %}
+	<div class="project-links">
+		{% if project.github_link %}
+		<a href="{{ project.github_link }}" target="_blank" rel="noopener noreferrer"> GitHub </a>
+		{% endif %} {% if project.live_link %}
+		<a href="{{ project.live_link }}" target="_blank" rel="noopener noreferrer"> Live Demo </a>
+		{% endif %}
+	</div>
+</div>
 {% endblock %}
