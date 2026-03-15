@@ -21,7 +21,7 @@ from .tasks import sync_github
 def index(request):
     try:
         if not cache.get("github_synced") and cache.add("github_sync_running", True, 300):
-            sync_github.delay()
+            sync_github()
     except Exception:
         pass
     
@@ -202,7 +202,7 @@ def github_webhook(request):
         return JsonResponse({"status": "invalid request"}, status=400)
     
     try:
-        sync_github.delay()
+        sync_github()
         return JsonResponse({"status": "sync completed"})
     except Exception as e:
         return JsonResponse({"error": str(e)}, status=500)
